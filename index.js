@@ -27,8 +27,13 @@ app.get("/api/hello", function (req, res) {
 app.get("/api/:date?", (req, res) => {
   date = req.params?.date
   let isnum = /^\d+$/.test(date);
-  date = new Date((isnum?parseInt(date) : date))
-  res.json({ "unix": date.valueOf(), "utc": date.toGMTString() })
+  date = new Date((isnum?parseInt(date) : date) ?? new Date() )
+
+  let gmt = date.toGMTString();
+  if (! /^Invalid.*$/.test(gmt))
+    res.json({"unix": date.valueOf(), "utc": gmt});
+  else
+    res.json({"error": gmt});
 });
 
 
